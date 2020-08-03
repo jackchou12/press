@@ -1,5 +1,7 @@
 package me.saket.kgit
 
+import me.saket.kgit.MergeStrategy.OURS
+
 internal expect class RealGitRepository(directoryPath: String, sshKey: SshPrivateKey) : GitRepository
 
 interface GitRepository {
@@ -9,7 +11,7 @@ interface GitRepository {
    * behavior on the host machine. For e.g., following of renames may be disabled for
    * computing file diffs.
    */
-  fun resetUserConfigTo(config: GitConfig)
+  fun maybeInit(config: () -> GitConfig)
 
   fun isStagingAreaDirty(): Boolean
 
@@ -29,6 +31,8 @@ interface GitRepository {
   )
 
   fun pull(rebase: Boolean): PullResult
+
+  fun merge(with: GitCommit): PullResult
 
   fun fetch()
 
